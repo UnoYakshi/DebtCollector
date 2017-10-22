@@ -1,37 +1,20 @@
 {% extends "layout.html" %}
-<!--
-{% block title %}LogIn{% endblock %}
-{% block head %}
-  {{ super() }}
-  <style type="text/css">
-    .important { color: #336699; }
-  </style>
-{% endblock %}
-{% block content %}
-    <div class="container">
-      <h1>Please login</h1>
-      <form action="" method="post">
-        <input type="text" placeholder="Username" name="username" value="{{
-          request.form.login }}">
-         <input type="password" placeholder="Password" name="password" value="{{
-          request.form.password }}">
-        <input class="btn btn-default" type="submit" value="Login">
-      </form>
-      <br>
-    </div>
-      {% if error %}
-        <p class="error"><strong>Error:</strong> {{ error }}
-      {% endif %}
-{% endblock %}
--->
 
 {% block body %}
 {% if session['logged_in'] %}
-<p>You're logged in already!</p>
+    <p>You're logged in already!</p>
+    <form method="POST" action="/logout">
+        <input class="btn btn-default" type="submit" value="Logout">
+    </form>
 {% else %}
-<form method="POST" action="/login">
-    <div>{{ form.login.label }}: {{ form.login(class="css_class") }}</div>
-    <div>{{ form.password.label }}: {{ form.password() }}</div>
-</form>
+    <form method="POST" action="/login">
+        {{ form.csrf_token }}
+        {{ form.login.label }}: {{ form.login(class="css_class") }}
+        {{ form.password.label }}: {{ form.password() }}
+        <input class="btn btn-default" type="submit" value="Login">
+    </form>
+    {% if error %}
+        <p class="error"><strong>Error:</strong> {{ error }}
+    {% endif %}
 {% endif %}
 {% endblock %}
