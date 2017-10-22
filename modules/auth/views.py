@@ -3,7 +3,7 @@
 from flask import Blueprint, render_template, redirect, url_for, request, session, current_app, g
 from .forms import LoginForm, SignUpForm
 
-from DebtCollector import db
+from app import db
 #from database import db
 
 auth_bp = Blueprint('auth', __name__, template_folder='templates', static_folder='static')
