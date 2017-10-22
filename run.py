@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, render_template
+import json
 
 from modules.auth.views import auth_bp
 from modules.users.views import users_bp
@@ -15,6 +16,9 @@ class Users(db.Model):
     first_name = db.Column(db.String(128))
     last_name = db.Column(db.String(128))
     #date = db.Column(db.Date())
+    def to_json(self):
+        res = conn.execute(select([self]))
+        return json.dumps([dict(r) for r in res])
 
 @app.route('/')
 def index():
