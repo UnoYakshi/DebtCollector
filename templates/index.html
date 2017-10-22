@@ -1,13 +1,20 @@
 {% extends "layout.html" %}
-{% block title %}Index{% endblock %}
-{% block head %}
-  {{ super() }}
-  <style type="text/css">
-    .important { color: #336699; }
-  </style>
+
+{% block title %}
+  Home
 {% endblock %}
+
+
 {% block body %}
   <h1>Index</h1>
   <p class="important">
     Welcome on my awesome homepage.
+  <h2>Actions</h2>
+  <form method="GET" action="/login">
+      <input class="btn btn-default" type="submit" value="Login">
+  </form>
+  <form method="GET" action="/signup">
+      <input class="btn btn-default" type="submit" value="Signup">
+  </form>
+    <!-- Signup or Login -->
 {% endblock %}

@@ -1,20 +1,22 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Log In
+    Sign Up
 {% endblock %}
 
+
 {% block body %}
+
 {% if session['logged_in'] %}
     <p>You're logged in already!</p>
     <form method="POST" action="/logout">
         <input class="btn btn-default" type="submit" value="Logout">
     </form>
+
 {% else %}
     {% from "_formhelpers.html" import render_field %}
-
-    <div class="login-form">
-    <form method="POST" action="/login">
+    <form method="POST" action="/signup">
+    <dl>
         {{ form.csrf_token }}
         {% for field in form if field.widget.input_type != 'hidden' %}
             {% if field.errors %}
@@ -25,11 +27,9 @@
                 {{ render_field(field) }}
             {% endif %}
         {% endfor %}
-        <input class="btn btn-default" type="submit" value="Login">
+    </dl>
+        <input class="btn btn-default" type="submit" value="Signup">
     </form>
-    </div>
-    {% if error %}
-        <p class="error"><strong>Error:</strong> {{ error }}
-    {% endif %}
 {% endif %}
+
 {% endblock %}

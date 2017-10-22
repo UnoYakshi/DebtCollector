@@ -1,13 +1,29 @@
 #!/modules/auth/views.py
 
-from flask import Blueprint, render_template, redirect, url_for, request, session
-
-
-from .forms import LoginForm
+from flask import Blueprint, render_template, redirect, url_for, request, session, current_app, g
+from .forms import LoginForm, SignUpForm
 
 
 auth_bp = Blueprint('auth', __name__, template_folder='templates', static_folder='static')
+app = current_app._get_current_object()
 
+@auth_bp.route('/signup', methods=['GET'])
+def signup_get():
+    form = SignUpForm()
+    return render_template('signup.html', form=form)
+
+
+@auth_bp.route('/signup', methods=['POST'])
+def signup():
+    form = SignUpForm()
+    if form.validate_on_submit():
+        # Add new user to db...
+        #db.add(user)
+
+        # Auto log-in with the provided data... or even auto-log a user in...
+        #login_user(new_user)
+        return render_template('login.html', form=form, method='POST')
+    return render_template('signup.html', form=form)
 
 
 @auth_bp.route('/login', methods=['POST'])
