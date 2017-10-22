@@ -3,9 +3,12 @@
 from flask import Blueprint, render_template, redirect, url_for, request, session, current_app, g
 from .forms import LoginForm, SignUpForm
 
+from DebtCollector import db
+#from database import db
 
 auth_bp = Blueprint('auth', __name__, template_folder='templates', static_folder='static')
-app = current_app._get_current_object()
+
+#current_app.config['DATABASE']
 
 @auth_bp.route('/signup', methods=['GET'])
 def signup_get():
@@ -18,7 +21,10 @@ def signup():
     form = SignUpForm()
     if form.validate_on_submit():
         # Add new user to db...
-        #db.add(user)
+        user = Users(login=request.form['login'], first_name=request.form['first_name'], last_name=request.form['last_name'],
+                     email=request.form['email'], password=request.form['password'], birthday=request.form['birthday'])
+        db.session.add(user)
+        db.session.commit()
 
         # Auto log-in with the provided data... or even auto-log a user in...
         #login_user(new_user)
