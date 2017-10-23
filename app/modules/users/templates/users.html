@@ -13,11 +13,11 @@
     {% endfor %}
 
     {% if users_pg.has_prev %}
-        <a href="{{ url_for('.show_users', page_num=users_pg.prev_num, per_page=3) }}">&lt;&lt; Next</a>
+        <a href="{{ url_for('.show_users', page_num=users_pg.prev_num, per_page=pp) }}">&lt;&lt; Next</a>
     {% else %}&lt;&lt; Next
     {% endif %} ::
     {% if users_pg.has_next %}
-        <a href="{{ url_for('.show_users', page_num=users_pg.next_num, per_page=3) }}">Prev &gt;&gt;</a>
+        <a href="{{ url_for('.show_users', page_num=users_pg.next_num, per_page=pp) }}">Prev &gt;&gt;</a>
     {% else %}Prev &gt;&gt;
     {% endif %}
 {% endblock %}

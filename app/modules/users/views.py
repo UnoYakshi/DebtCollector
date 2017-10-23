@@ -1,5 +1,5 @@
 #!/modules/users/views.py
-
+from config import MAX_UNITS_PER_PAGE
 from flask import Blueprint, render_template
 
 from .forms import EditUserForm
@@ -20,7 +20,11 @@ def show_user(username):
 
 @users_bp.route('/users/<int:per_page>/<int:page_num>', methods=['GET'])
 def show_users(page_num=1, per_page=3):
-    return render_template('users.html', users_pg=Users.query.paginate(page_num, per_page, False))
+    # Clamp for the security reason...
+    pp = per_page
+    if pp > MAX_UNITS_PER_PAGE:
+        pp = MAX_UNITS_PER_PAGE
+    return render_template('users.html', users_pg=Users.query.paginate(page_num, per_page, False), pp=pp)
 
 
 
