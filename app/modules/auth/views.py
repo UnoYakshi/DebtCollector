@@ -18,7 +18,7 @@ def signup_get():
 @auth_bp.route('/signup', methods=['POST'])
 def signup():
     form = SignUpForm()
-    if form.validate_on_submit():
+    if form.validate() and form.validate_on_submit():
         # Add new user to db...
         new_user = Users(login=form.login.data,
                          first_name=form.first_name.data,
@@ -31,7 +31,9 @@ def signup():
 
         # Auto log-in with the provided data... or even auto-log a user in...
         #login_user(new_user)
-        return render_template('login.html', form=form, method='POST')
+        login_form = LoginForm()
+        login_form.login = form.login
+        return render_template('login.html', form=login_form, method='POST')
     return render_template('signup.html', form=form)
 
 
