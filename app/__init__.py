@@ -27,10 +27,12 @@ def show_user(username):
     user = Users.query.filter_by(login=username).first_or_404()
     return render_template('user.html', user=user)
 
-@app.route('/users?page=<id:count>')
+
+@app.route('/users?page=<int:count>')
 def show_users(count):
-    users = Users
+    users = Users.query.filter_by(login='Anas').first()
     return render_template('user.html', user=users)
+
 
 @app.errorhandler(404)
 def not_found(error):

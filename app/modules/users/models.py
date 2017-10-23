@@ -1,7 +1,7 @@
 #!/modules/users/models.py
 
 from sqlalchemy import Column, Integer, String, ForeignKey, Date
-#from sqlalchemy.orm import relationship
+from app import db
 from flask_appbuilder import Model
 
 class User(Model):
