@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block body %}
+    {% from "_formhelpers.html" import render_pagination2 %}
+
+    {% for user in users_pg.items %}
+        <br>     Login: {{ user.login }}
+        <br>First Name: {{ user.first_name }}
+        <br> Last Name: {{ user.last_name }}
+        <br>    E-mail: {{ user.email }}
+        <br>     B-day: {{ user.birthdate }}
+        <br><br>
+    {% endfor %}
+
+    {% if users_pg.has_prev %}
+        <a href="{{ url_for('.show_users', page_num=users_pg.prev_num, per_page=3) }}">&lt;&lt; Next</a>
+    {% else %}&lt;&lt; Next
+    {% endif %} ::
+    {% if users_pg.has_next %}
+        <a href="{{ url_for('.show_users', page_num=users_pg.next_num, per_page=3) }}">Prev &gt;&gt;</a>
+    {% else %}Prev &gt;&gt;
+    {% endif %}
+{% endblock %}

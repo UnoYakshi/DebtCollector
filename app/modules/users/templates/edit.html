@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Edit {{ user.id }}
+{% endblock %}
+
+
+
+{% block body %}
+
+{% if not session['logged_in'] %}
+    <p>You aren't logged in yet! Please, do it.</p>
+    <form method="GET" action="/login">
+        <input class="btn btn-default" type="submit" value="Login">
+    </form>
+
+{% else %}
+    {% from "_formhelpers.html" import render_field %}
+    <form method="POST" action="/signup">
+    <dl>
+        {{ form.csrf_token }}
+        {% for field in form if field.widget.input_type != 'hidden' %}
+            {% if field.errors %}
+                <div class="has-error">
+                    {{ render_field(field) }}
+                </div>
+            {% else %}
+                {{ render_field(field) }}
+            {% endif %}
+        {% endfor %}
+    </dl>
+        <input class="btn btn-default" type="submit" value="Save">
+    </form>
+{% endif %}
+
+{% endblock %}

@@ -11,9 +11,10 @@ db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 
 from app.modules.auth.views import auth_bp
+from app.modules.users.views import users_bp
 from app.modules.auth.models import Users
 app.register_blueprint(auth_bp)
-
+app.register_blueprint(users_bp)
 db.create_all()
 
 
@@ -22,16 +23,6 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/user/<username>')
-def show_user(username):
-    user = Users.query.filter_by(login=username).first_or_404()
-    return render_template('user.html', user=user)
-
-
-@app.route('/users?page=<int:count>')
-def show_users(count):
-    users = Users.query.filter_by(login='Anas').first()
-    return render_template('user.html', user=users)
 
 
 @app.errorhandler(404)

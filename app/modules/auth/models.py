@@ -48,4 +48,5 @@ class Users(db.Model):
         return json.dumps([dict(r) for r in res])
 
     def as_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        return json.dumps({c.name: getattr(self, c.name) for c in self.__table__.columns})
+
