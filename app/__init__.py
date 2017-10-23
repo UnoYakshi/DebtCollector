@@ -2,14 +2,19 @@
 
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
-from app.modules.auth.models import Users
-
+from flask_bcrypt import Bcrypt
 
 app = Flask(__name__)
 app.config.from_object('config')
 
 db = SQLAlchemy(app)
-print('12')
+bcrypt = Bcrypt(app)
+
+from app.modules.auth.views import auth_bp
+from app.modules.auth.models import Users
+app.register_blueprint(auth_bp)
+
+db.create_all()
 
 
 @app.route('/')
@@ -22,13 +27,12 @@ def show_user(username):
     user = Users.query.filter_by(login=username).first_or_404()
     return render_template('user.html', user=user)
 
+@app.route('/users?page=<id:count>')
+def show_users(count):
+    users = Users
+    return render_template('user.html', user=users)
 
 @app.errorhandler(404)
 def not_found(error):
     return render_template('404.html'), 404
 
-
-from app.modules.auth.views import auth_bp
-app.register_blueprint(auth_bp)
-
-db.create_all()

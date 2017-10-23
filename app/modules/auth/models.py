@@ -4,8 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug import generate_password_hash, check_password_hash
 import json
 
-import app
-
+from app import db, bcrypt
 
 class Users(db.Model):
     __tablename__ = 'users'
@@ -22,7 +21,7 @@ class Users(db.Model):
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
-        self.password = generate_password_hash(password)
+        self.pwdhash = bcrypt.generate_password_hash(password)
         self.birthdate = birthdate
 
     # TODO: make authentication...
@@ -47,3 +46,6 @@ class Users(db.Model):
     def to_json(self):
         res = conn.execute(select([self]))
         return json.dumps([dict(r) for r in res])
+
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}

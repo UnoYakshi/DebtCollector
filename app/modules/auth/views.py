@@ -4,7 +4,7 @@ from flask import Blueprint, render_template, redirect, url_for, request, sessio
 
 from .forms import LoginForm, SignUpForm
 from .models import Users
-from app import db
+from app import db, bcrypt
 
 auth_bp = Blueprint('auth', __name__, template_folder='templates', static_folder='static')
 
@@ -20,8 +20,12 @@ def signup():
     form = SignUpForm()
     if form.validate_on_submit():
         # Add new user to db...
-        new_user = Users(login=form.login.data, first_name=form.first_name.data, last_name=form.last_name.data,
-                     email=form.email.data, password=form.password.data, birthdate=form.birthdate.data)
+        new_user = Users(login=form.login.data,
+                         first_name=form.first_name.data,
+                         last_name=form.last_name.data,
+                         email=form.email.data,
+                         password=form.password.data,
+                         birthdate=form.birthdate.data)
         db.session.add(new_user)
         db.session.commit()
 
@@ -39,7 +43,7 @@ def login():
         if not user:
             return redirect(url_for('index'))
 
-        if user.check_password(form.password.data):
+        if bcrypt.check_password_hash(user.pwdhash, form.password.data):
             #login_user(user)
             session['logged_in'] = True
             #identity_changed.send(current_app._get_current_object(), identity=Identity(user.id))
