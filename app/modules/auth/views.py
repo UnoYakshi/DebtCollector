@@ -4,11 +4,10 @@ from flask import Blueprint, render_template, redirect, url_for, request, sessio
 from .forms import LoginForm, SignUpForm
 
 from app import db
-#from database import db
+from .models import Users
 
 auth_bp = Blueprint('auth', __name__, template_folder='templates', static_folder='static')
 
-#current_app.config['DATABASE']
 
 @auth_bp.route('/signup', methods=['GET'])
 def signup_get():
