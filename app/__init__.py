@@ -1,16 +1,15 @@
-#! app/__init__.py
+#! ~DebtCollector/app/__init__.py
 
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
+from app.modules.auth.models import Users
 
 
 app = Flask(__name__)
 app.config.from_object('config')
 
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.sqlite3'
-#app.config['SECRET_KEY'] = 'ss'
-
 db = SQLAlchemy(app)
+print('12')
 
 
 @app.route('/')
@@ -19,7 +18,7 @@ def index():
 
 
 @app.route('/user/<username>')
-def show_user():
+def show_user(username):
     user = Users.query.filter_by(login=username).first_or_404()
     return render_template('user.html', user=user)
 
@@ -29,7 +28,7 @@ def not_found(error):
     return render_template('404.html'), 404
 
 
-from .modules.auth.views import auth_bp
+from app.modules.auth.views import auth_bp
 app.register_blueprint(auth_bp)
 
 db.create_all()
