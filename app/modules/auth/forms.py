@@ -4,6 +4,8 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, DateField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, Regexp, ValidationError
 from wtforms.fields.html5 import DateField
+from wtforms_components import DateRange
+from datetime import datetime, date, timedelta
 
 from .models import Users
 from app import db
@@ -74,7 +76,8 @@ class SignUpForm(LoginForm):
     confirm = PasswordField('Confirm')
     birthdate = DateField('Birthdate',
                           format='%d.%m.%Y',
-                          validators=[DataRequired()
+                          validators=[DataRequired(),
+                                      DateRange(max=date.today() - 18*timedelta(days=365))
     #, DateRange(min=date.today() - timedelta(years=18),max=date.today())
                                       ],
                           render_kw={"placeholder": "14.02.1990"})
