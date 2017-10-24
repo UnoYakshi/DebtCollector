@@ -1,9 +1,10 @@
 #! ~DebtCollector/app/rest.py
 
 from flask import Blueprint, render_template, request, jsonify
+import json
 from app import app, db
 from app.modules.auth.models import Users
-
+from app.modules.auth.forms import SignUpForm
 
 rest_bp = Blueprint('rest', __name__,
                  template_folder='templates',
@@ -13,22 +14,23 @@ rest_bp = Blueprint('rest', __name__,
 @rest_bp.route('/users')
 def api_users(page=1, per_page=3):
     if request.method == 'POST':
-        user = request.get_json()
+        raw_data = json.loads(request.get_json())
 
-        new_user = Users(login=form.login.data,
-                         first_name=form.first_name.data,
-                         last_name=form.last_name.data,
-                         email=form.email.data,
-                         password=form.password.data,
-                         birthdate=form.birthdate.data)
-        db.session.add(new_user)
-        db.session.commit()
-        #form = SignUpForm()
-        # Validate the input data...
+        form = SignUpForm()
+        for field in form:
+            form[field.data] = raw_data[field.data]
 
-        # Pass through the signup()...
+        if form.validate():
+            new_user = Users(login=form.login.data,
+                             first_name=form.first_name.data,
+                             last_name=form.last_name.data,
+                             email=form.email.data,
+                             password=form.password.data,
+                             birthdate=form.birthdate.data)
+            db.session.add(new_user)
+            db.session.commit()
 
-        return "The user's login is {}!".format(user['login'])
+        return "The user's login is {}!".format(new_user['login'])
 
     else:
         all_users = {}
