@@ -10,6 +10,14 @@
         <br>    E-mail: {{ user.email }}
         <br>     B-day: {{ user.birthdate }}
         <br><br>
+
+        {% for row_index in range(x['date']|count) %}
+            <tr>
+              <td>{{ x['date'][row_index]|tojson|safe }}</td>
+              <td>{{ x['users'][row_index] }}</td>
+            </tr>
+        {% endfor %}
+
     {% endfor %}
 
     {% if users_pg.has_prev %}

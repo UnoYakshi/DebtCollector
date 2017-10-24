@@ -5,8 +5,8 @@
 {% endblock %}
 
 {% block body %}
-{% if session['logged_in'] %}
-    <p>You're logged in already!</p>
+{% if current_user.is_authenticated %}
+    <p>You're logged in already as {{ current_user.login }}.</p>
     <form method="POST" action="/logout">
         <input class="btn btn-default" type="submit" value="Logout">
     </form>

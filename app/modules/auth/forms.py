@@ -6,11 +6,12 @@ from wtforms.validators import DataRequired, Length, Email, EqualTo, Regexp, Val
 from wtforms.fields.html5 import DateField
 
 from .models import Users
+from app import db
 
 
-
+# Validator that checks if the field is not in the model yet...
 class Unique(object):
-    def __init__(self, model, field, message=u'Is taken already.'):
+    def __init__(self, model, field, message='Is taken already.'):
         self.model = model
         self.field = field
         self.message = message
@@ -24,6 +25,10 @@ class Unique(object):
 class LoginForm(FlaskForm):
     login = StringField('Login', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
+
+    def get_user(self):
+        return db.session.query(Users).filter_by(login=self.login.data).first()
+
 
 class SignUpForm(LoginForm):
     login = StringField('Login',
@@ -67,16 +72,15 @@ class SignUpForm(LoginForm):
             return False
 
         # Check for email...
-        user = Users.query.filter_by(email=self.email.data).first()
+        user = db.session.query(Users).filter_by(email=self.email.data).first()
         if user:
-            self.email.errors.append(u'That email is already taken.')
+            self.email.errors.append('That email is already taken.')
             return False
 
         # Check for login/username...
-        user = Users.query.filter_by(email=self.login.data).first()
+        user = db.session.query(Users).filter_by(email=self.login.data).first()
         if user:
-            self.login.errors.append(u'That login/username is already taken.')
+            self.login.errors.append('That login/username is already taken.')
             return False
 
         return True
-

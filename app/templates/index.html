@@ -6,15 +6,23 @@
 
 
 {% block body %}
-  <h1>Index</h1>
+  <h1>Home</h1>
   <p class="important">
     Home sweet home...
   <h2>Actions</h2>
-  <form method="GET" action="/login">
-      <input class="btn btn-default" type="submit" value="Login">
-  </form>
-  <form method="GET" action="/signup">
-      <input class="btn btn-default" type="submit" value="Signup">
-  </form>
-    <!-- Signup or Login -->
+
+  {% if current_user.is_authenticated %}
+    Welcome home, {{ current_user.login }}. All you can do is leave...
+    <form method="POST" action="/logout">
+        <input class="btn btn-default" type="submit" value="Logout">
+    </form>
+  {% else %}
+    <form method="GET" action="/login">
+        <input class="btn btn-default" type="submit" value="Login">
+    </form>
+    <form method="GET" action="/signup">
+        <input class="btn btn-default" type="submit" value="Signup">
+    </form>
+  {% endif %}
+
 {% endblock %}
