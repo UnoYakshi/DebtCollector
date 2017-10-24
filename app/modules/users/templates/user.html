@@ -1,9 +1,11 @@
 {% extends "layout.html" %}
 
 {% block body %}
-    <br>     Login: {{ user.login }}
-    <br>First Name: {{ user.first_name }}
-    <br> Last Name: {{ user.last_name }}
-    <br> E-mail: {{ user.email }}
-    <br> B-day: {{ user.birthdate }}
+
+    {% from "_formhelpers.html" import render_field %}
+
+    {% for field in user.fields if field.widget.input_type != 'hidden' %}
+        {{ render_field(field) }}
+    {% endfor %}
+
 {% endblock %}

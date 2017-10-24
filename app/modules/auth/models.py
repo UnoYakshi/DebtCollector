@@ -1,19 +1,20 @@
 #! ~DebtCollector/app/modules/auth/models.py
 
-from flask_sqlalchemy import SQLAlchemy
+#from flask_sqlalchemy import SQLAlchemy
 from werkzeug import generate_password_hash, check_password_hash
 import json
+from datetime import datetime, date
 
 from app import db, bcrypt
 
 class Users(db.Model):
     __tablename__ = 'users'
-    id = db.Column('uid', db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column('id', db.Integer, primary_key=True, autoincrement=True)
     login = db.Column('login', db.String(32), unique=True, index=True)
     first_name = db.Column('first_name', db.String(128))
     last_name = db.Column('last_name', db.String(128))
     email = db.Column('email', db.String(128), unique=True, index=True)
-    pwdhash = db.Column('password', db.String(128), unique=True)
+    pwdhash = db.Column('pwdhash', db.String(128), unique=True)
     birthdate = db.Column('birthdate', db.Date())
 
     def __init__(self, login, first_name, last_name, email, password, birthdate):
@@ -24,7 +25,6 @@ class Users(db.Model):
         self.pwdhash = bcrypt.generate_password_hash(password)
         self.birthdate = birthdate
 
-    # TODO: make authentication...
     def is_authenticated(self):
         return True
 
@@ -43,10 +43,16 @@ class Users(db.Model):
     def check_password(self, password):
         return check_password_hash(self.pwdhash, password)
 
+    # TODO :: Make to_json/as_dict automated, but considering datetime and hash...
     def to_json(self):
-        res = conn.execute(select([self]))
-        return json.dumps([dict(r) for r in res])
+        return {
+            'id': self.id,
+            'login': self.login,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'email': self.email,
+            'birthdate': self.birthdate
+        }
 
     def as_dict(self):
-        return json.dumps({c.name: getattr(self, c.name) for c in self.__table__.columns})
-
+        return json.dumps({c.name: (c.name.isoformat()) if (type(c) in (datetime, date)) else (getattr(self, c.name)) for c in self.__table__.columns})

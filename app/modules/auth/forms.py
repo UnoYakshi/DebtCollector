@@ -65,7 +65,7 @@ class SignUpForm(LoginForm):
                           validators=[DataRequired()
     #, DateRange(min=date.today() - timedelta(years=18),max=date.today())
                                       ],
-                          render_kw = {"placeholder": "14.02.1990"})
+                          render_kw={"placeholder": "14.02.1990"})
 
     def validate(self):
         if not FlaskForm.validate(self):

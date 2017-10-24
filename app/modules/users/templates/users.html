@@ -4,20 +4,9 @@
     {% from "_formhelpers.html" import render_pagination2 %}
 
     {% for user in users_pg.items %}
-        <br>     Login: {{ user.login }}
-        <br>First Name: {{ user.first_name }}
-        <br> Last Name: {{ user.last_name }}
-        <br>    E-mail: {{ user.email }}
-        <br>     B-day: {{ user.birthdate }}
-        <br><br>
-
-        {% for row_index in range(x['date']|count) %}
-            <tr>
-              <td>{{ x['date'][row_index]|tojson|safe }}</td>
-              <td>{{ x['users'][row_index] }}</td>
-            </tr>
+        {% for field in user.fields if field.widget.input_type != 'hidden' %}
+            {{ render_field(field) }}
         {% endfor %}
-
     {% endfor %}
 
     {% if users_pg.has_prev %}
