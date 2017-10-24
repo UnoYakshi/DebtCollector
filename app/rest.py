@@ -10,7 +10,7 @@ rest_bp = Blueprint('rest', __name__,
                  static_folder='static')
 
 
-@app.route('/users')
+@rest_bp.route('/users')
 def api_users(page=1, per_page=3):
     if request.method == 'POST':
         user = request.get_json()
@@ -40,12 +40,12 @@ def api_users(page=1, per_page=3):
         return jsonify(all_users)
 
 
-@app.route('/user/<int:id>')
+@rest_bp.route('/user/<int:id>')
 def api_user(id):
     return jsonify(db.session.query(Users).get(id).to_json())
 
 
-@app.route('/user/<string:login>')
+@rest_bp.route('/user/<string:login>')
 def api_user_login(login):
     return jsonify(db.session.query(Users).filter_by(login=login).first_or_404().to_json())
 
