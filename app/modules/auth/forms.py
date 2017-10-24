@@ -21,6 +21,18 @@ class Unique(object):
         if check:
             raise ValidationError(self.message)
 
+class NContains(object):
+    def __init__(self, model, field, message='Is taken already.'):
+        self.model = model
+        self.field = field
+        self.message = message
+
+    def __call__(self, form, field):
+        check = self.model.query.filter(self.field == field.data).first()
+        if check:
+            raise ValidationError(self.message)
+
+
 
 class LoginForm(FlaskForm):
     login = StringField('Login', validators=[DataRequired()])
@@ -56,8 +68,8 @@ class SignUpForm(LoginForm):
                         render_kw={"placeholder": "user.example@mail.com"})
     password = PasswordField('Password',
                              validators=[DataRequired(),
-                                         Regexp('((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{8,32})',
-                                                message='Use at least once: a-z, A-Z, 0-9, [@#$%]'),
+                                         Regexp('((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%])(^((?!' + str(login) + ').)*$).{8,32})',
+                                                message='Use at least once: a-z, A-Z, 0-9, [@#$%]. Don\'t use login somehow.'),
                                          EqualTo('confirm', message='Passwords must match!')])
     confirm = PasswordField('Confirm')
     birthdate = DateField('Birthdate',

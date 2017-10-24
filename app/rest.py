@@ -1,5 +1,6 @@
 #! ~DebtCollector/app/rest.py
 
+from config import MAX_UNITS_PER_PAGE
 from flask import Blueprint, render_template, request, jsonify
 import json
 from app import app, db
@@ -12,7 +13,7 @@ rest_bp = Blueprint('rest', __name__,
 
 
 @rest_bp.route('/users')
-def api_users(page=1, per_page=3):
+def api_users(page=1, per_page=MAX_UNITS_PER_PAGE):
     if request.method == 'POST':
         raw_data = json.loads(request.get_json())
 
@@ -33,9 +34,14 @@ def api_users(page=1, per_page=3):
         return "The user's login is {}!".format(new_user['login'])
 
     else:
-        all_users = {}
+        pp = per_page
+        if pp > MAX_UNITS_PER_PAGE:
+            pp = MAX_UNITS_PER_PAGE
 
-        users = db.session.query(Users).paginate(page, per_page, False).items
+        # TODO :: Somehow deal with request-params absence?..
+        users = db.session.query(Users).all()
+            #paginate(page, pp, False).items
+        all_users = {}
         for user in users:
             all_users[user.login] = db.session.query(Users).filter_by(login=user.login).first_or_404().to_json()
 
