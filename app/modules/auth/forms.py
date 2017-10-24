@@ -2,11 +2,24 @@
 
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, DateField
-from wtforms.validators import DataRequired, Length, Email, EqualTo
+from wtforms.validators import DataRequired, Length, Email, EqualTo, Regexp, ValidationError
 from wtforms.fields.html5 import DateField
 
-
 from .models import Users
+
+
+
+class Unique(object):
+    def __init__(self, model, field, message=u'Is taken already.'):
+        self.model = model
+        self.field = field
+        self.message = message
+
+    def __call__(self, form, field):
+        check = self.model.query.filter(self.field == field.data).first()
+        if check:
+            raise ValidationError(self.message)
+
 
 class LoginForm(FlaskForm):
     login = StringField('Login', validators=[DataRequired()])
@@ -14,19 +27,33 @@ class LoginForm(FlaskForm):
 
 class SignUpForm(LoginForm):
     login = StringField('Login',
-                        validators=[DataRequired(), Length(max=32)],
-                        render_kw={"placeholder": "JoDo_316"})
+                        validators=[DataRequired(),
+                                    Unique(Users, Users.login),
+                                    Length(max=32)],
+                        render_kw={"placeholder": "JoDo316"})
     first_name = StringField('First Name',
-                             validators=[DataRequired(), Length(min=2, max=32)],
+                             validators=[DataRequired(),
+                                         Regexp('((^[A-Z][a-z]+$)|(^[А-Я][а-я]+$))',
+                                                message='Either cyrrilic, or latin. Start with the capital.'),
+                                         Length(min=2, max=32)],
                              render_kw={"placeholder": "John"})
     last_name = StringField('Last Name',
-                            validators=[DataRequired(), Length(min=2, max=32)],
+                            validators=[DataRequired(),
+                                        Regexp('((^[A-Z][a-z]+$)|(^[А-Я][а-я]+$))',
+                                               message='Either cyrrilic, or latin. Start with the capital.'),
+                                        Length(min=2, max=32)],
                             render_kw={"placeholder": "Doe"})
     email = StringField('Email',
-                        validators=[DataRequired(), Email(), Length(min=3, max=40)],
+                        validators=[DataRequired(),
+                                    Email(),
+                                    Unique(Users, Users.email),
+                                    Length(min=3, max=40)],
                         render_kw={"placeholder": "user.example@mail.com"})
     password = PasswordField('Password',
-                             validators=[DataRequired(), EqualTo('confirm', message='Passwords must match!')])
+                             validators=[DataRequired(),
+                                         Regexp('((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{8,32})',
+                                                message='Use at least once: a-z, A-Z, 0-9, [@#$%]'),
+                                         EqualTo('confirm', message='Passwords must match!')])
     confirm = PasswordField('Confirm')
     birthdate = DateField('Birthdate',
                           format='%d.%m.%Y',
@@ -39,9 +66,17 @@ class SignUpForm(LoginForm):
         if not FlaskForm.validate(self):
             return False
 
-        user = Users.query.filter_by(email=self.email.data.lower()).first()
+        # Check for email...
+        user = Users.query.filter_by(email=self.email.data).first()
         if user:
-            self.email.errors.append("That email is already taken.")
+            self.email.errors.append(u'That email is already taken.')
             return False
-        else:
-            return True
+
+        # Check for login/username...
+        user = Users.query.filter_by(email=self.login.data).first()
+        if user:
+            self.login.errors.append(u'That login/username is already taken.')
+            return False
+
+        return True
+
