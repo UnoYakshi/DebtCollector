@@ -18,6 +18,6 @@ The main idea is to store all the debts between users, change it (add, subtract)
 P.S. Auto-setup will be added later.
 
 ### REST
-1. /api/user/<id> -- retrieves user with the given id, or 404.
-2. /api/user/<login> -- retrieves user with the given login, or 404.
+1. /api/user/\<id\> -- retrieves user with the given id, or 404.
+2. /api/user/\<login\> -- retrieves user with the given login, or 404.
 3. /api/users -- retrieves all the users. TODO: flexiby.
