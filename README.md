@@ -11,7 +11,7 @@ The main idea is to store all the debts between users, change it (add, subtract)
 
 ### By-Hand
 1. Activate virtualen '. venv/bin/activate'.
-2. Install the dependencies (reqs.txt)
+2. Install the dependencies (reqs.txt), I suggest using 'pip3 install reqs.txt'.
 3. For the test reasons, just execute run.py with python3.
 4. https://127.0.0.1/
 
